@@ -1,0 +1,2680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兴利调度系统</title>
+    <style>
+        :root {
+            --primary-color: #1976d2;
+            --primary-light: #e3f2fd;
+            --primary-dark: #0d47a1;
+            --secondary-color: #388e3c;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --success-color: #4caf50;
+            --info-color: #03a9f4;
+            --text-color: #333;
+            --text-secondary: #666;
+            --border-color: #ddd;
+            --background-light: #f5f7fa;
+            --card-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-light);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            padding: 15px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-icon {
+            margin-right: 5px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-info {
+            background-color: var(--info-color);
+            color: white;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .tabs {
+            display: flex;
+            background-color: white;
+            margin-top: 20px;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            white-space: nowrap;
+        }
+        
+        .tab:hover {
+            background-color: var(--primary-light);
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            font-weight: bold;
+            background-color: var(--primary-light);
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .card-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            flex: 1;
+            min-width: 200px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            padding: 15px;
+        }
+        
+        .stat-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value.primary {
+            color: var(--primary-color);
+        }
+        
+        .stat-value.success {
+            color: var(--success-color);
+        }
+        
+        .stat-value.warning {
+            color: var(--warning-color);
+        }
+        
+        .stat-value.danger {
+            color: var(--danger-color);
+        }
+        
+        .stat-value.info {
+            color: var(--info-color);
+        }
+        
+        .stat-value.secondary {
+            color: var(--secondary-color);
+        }
+        
+        .stat-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        thead th {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: bold;
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        tbody td {
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+        
+        tbody tr:hover {
+            background-color: var(--background-light);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .badge-success {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+        }
+        
+        .badge-warning {
+            background-color: #fff3e0;
+            color: var(--warning-color);
+        }
+        
+        .badge-danger {
+            background-color: #ffebee;
+            color: var(--danger-color);
+        }
+        
+        .badge-info {
+            background-color: #e1f5fe;
+            color: var(--info-color);
+        }
+        
+        .badge-primary {
+            background-color: #e3f2fd;
+            color: var(--primary-color);
+        }
+        
+        .badge-secondary {
+            background-color: #f5f5f5;
+            color: var(--text-secondary);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .gate-card {
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            padding: 15px;
+            position: relative;
+        }
+        
+        .gate-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .gate-open {
+            background-color: var(--success-color);
+        }
+        
+        .gate-closed {
+            background-color: var(--danger-color);
+        }
+        
+        .gate-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .gate-detail {
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .gate-image {
+            width: 100%;
+            height: 100px;
+            background-color: var(--background-light);
+            margin: 10px 0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .button-group button {
+            flex: 1;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .alert-warning {
+            background-color: #fff3e0;
+            border-left: 4px solid var(--warning-color);
+            color: var(--warning-color);
+        }
+        
+        .alert-danger {
+            background-color: #ffebee;
+            border-left: 4px solid var(--danger-color);
+            color: var(--danger-color);
+        }
+        
+        .alert-success {
+            background-color: #e8f5e9;
+            border-left: 4px solid var(--success-color);
+            color: var(--success-color);
+        }
+        
+        .alert-info {
+            background-color: #e1f5fe;
+            border-left: 4px solid var(--info-color);
+            color: var(--info-color);
+        }
+        
+        .chart-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: var(--background-light);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 8px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px 0 0 4px;
+            font-size: 14px;
+        }
+        
+        .search-btn {
+            padding: 8px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        .page-item {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .page-item:hover {
+            background-color: var(--primary-light);
+        }
+        
+        .page-item.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+        
+        .inner-tabs {
+            display: flex;
+            background-color: #f5f7fa;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .inner-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .inner-tab:hover {
+            background-color: #e3f2fd;
+        }
+        
+        .inner-tab.active {
+            color: var(--primary-color);
+            font-weight: bold;
+            background-color: var(--primary-light);
+        }
+        
+        .inner-tab-content {
+            display: none;
+        }
+        
+        .inner-tab-content.active {
+            display: block;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--success-color);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        
+        .progress-bar-warning {
+            background-color: var(--warning-color);
+        }
+        
+        .progress-bar-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .priority-indicator {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        
+        .priority-1 {
+            background-color: var(--danger-color);
+        }
+        
+        .priority-2 {
+            background-color: var(--warning-color);
+        }
+        
+        .priority-3 {
+            background-color: var(--info-color);
+        }
+        
+        .priority-4 {
+            background-color: var(--success-color);
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .card-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 状态信息 -->
+        <div class="card-row">
+            <div class="stat-card">
+                <div class="stat-title">当前水位</div>
+                <div class="stat-value primary">1723.85 m</div>
+                <div class="stat-desc">水库蓄水率: 82.0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">可用水量</div>
+                <div class="stat-value primary">1250 万m³</div>
+                <div class="stat-desc">防洪限制: -300 万m³</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">兴利供水</div>
+                <div class="stat-value primary">25.5 m³/s</div>
+                <div class="stat-desc">灌溉: 15.0 | 供水: 10.5</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">年度效益</div>
+                <div class="stat-value primary">3580 万元</div>
+                <div class="stat-desc">完成率: 65.2%</div>
+            </div>
+        </div>
+        
+        <div class="alert alert-info">
+            <div class="alert-icon">ℹ️</div>
+            <div>
+                <strong>当前调度状态：</strong>主汛期兴利调度阶段（2024年6月1日至9月30日），在确保防洪安全前提下开展灌溉和供水调度
+            </div>
+        </div>
+        
+        <!-- 主要功能选项卡 -->
+        <div class="tabs">
+            <div class="tab active" data-tab="principles">1. 调度原则</div>
+            <div class="tab" data-tab="plans">2. 调度计划</div>
+            <div class="tab" data-tab="irrigation">3. 灌溉调度</div>
+            <div class="tab" data-tab="water-supply">4. 供水调度</div>
+            <div class="tab" data-tab="tasks">5. 调度任务</div>
+            <div class="tab" data-tab="statistics">6. 效益评估</div>
+        </div>
+        
+        <!-- 1. 调度原则 -->
+        <div class="tab-content active" id="principles">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">兴利调度原则列表</div>
+                    <button class="btn btn-primary">添加原则</button>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="搜索调度原则...">
+                    <button class="search-btn">搜索</button>
+                </div>
+                
+                <div class="filters">
+                    <div class="filter">
+                        <span class="filter-label">类型</span>
+                        <select class="filter-select">
+                            <option>全部</option>
+                            <option>总则</option>
+                            <option>灌溉调度</option>
+                            <option>供水调度</option>
+                            <option>生态调度</option>
+                        </select>
+                    </div>
+                    <div class="filter">
+                        <span class="filter-label">适用时段</span>
+                        <select class="filter-select">
+                            <option>全部</option>
+                            <option selected>主汛期</option>
+                            <option>蓄水期</option>
+                            <option>供水期</option>
+                        </select>
+                    </div>
+                    <div class="filter">
+                        <span class="filter-label">状态</span>
+                        <select class="filter-select">
+                            <option>全部</option>
+                            <option selected>启用</option>
+                            <option>禁用</option>
+                        </select>
+                    </div>
+                    <div class="filter">
+                        <span class="filter-label">&nbsp;</span>
+                        <button class="btn btn-primary" style="width: 100%;">应用筛选</button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">ID</th>
+                                <th style="width: 15%;">类型</th>
+                                <th style="width: 20%;">名称</th>
+                                <th style="width: 30%;">内容摘要</th>
+                                <th style="width: 15%;">适用时段</th>
+                                <th style="width: 5%;">状态</th>
+                                <th style="width: 10%;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>总则</td>
+                                <td>兴利与防洪关系</td>
+                                <td>兴利调度必须在确保防洪安全的前提下进行，防洪任务优先</td>
+                                <td>全年</td>
+                                <td><span class="badge badge-success">启用</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>总则</td>
+                                <td>兴利优先次序</td>
+                                <td>兴利供水优先次序：生活用水 > 生态基流 > 农业灌溉 > 工业用水</td>
+                                <td>全年</td>
+                                <td><span class="badge badge-success">启用</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>灌溉调度</td>
+                                <td>灌溉水量分配</td>
+                                <td>灌溉期间应优先保障农业灌溉用水需求，按照作物需水规律和灌区分配方案供水</td>
+                                <td>灌溉期</td>
+                                <td><span class="badge badge-success">启用</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>供水调度</td>
+                                <td>城镇供水保障</td>
+                                <td>城镇生活和重要工业供水为第一优先级，供水保证率不低于98%</td>
+                                <td>全年</td>
+                                <td><span class="badge badge-success">启用</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>供水调度</td>
+                                <td>供水调度规则</td>
+                                <td>根据区域需水规律，统筹安排城镇、农业和工业供水量，保障高效供水</td>
+                                <td>全年</td>
+                                <td><span class="badge badge-success">启用</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>生态调度</td>
+                                <td>生态基流保障</td>
+                                <td>保证下游河道生态基流不小于0.5立方米每秒，维持下游河道基本生态功能</td>
+                                <td>全年</td>
+                                <td><span class="badge badge-success">启用</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>灌溉调度</td>
+                                <td>作物关键期保障</td>
+                                <td>作物生长关键期加大灌溉供水量，满足作物生长需求，提高产量</td>
+                                <td>灌溉期</td>
+                                <td><span class="badge badge-success">启用</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>供水调度</td>
+                                <td>干旱期供水调整</td>
+                                <td>干旱期根据蓄水情况，适当调整供水量，优先保障居民生活用水</td>
+                                <td>供水期</td>
+                                <td><span class="badge badge-success">启用</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="pagination">
+                    <div class="page-item">«</div>
+                    <div class="page-item active">1</div>
+                    <div class="page-item">2</div>
+                    <div class="page-item">»</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">兴利供水优先级配置</div>
+                    <button class="btn btn-primary">编辑</button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>兴利类型</th>
+                                <th>优先级</th>
+                                <th>兴利需求描述</th>
+                                <th>最低保障要求</th>
+                                <th>保证率</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span class="priority-indicator priority-1"></span>
+                                    城乡供水
+                                </td>
+                                <td>1级</td>
+                                <td>保障居民生活和重要工业用水</td>
+                                <td>全年供水保证率98%</td>
+                                <td>98%</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="priority-indicator priority-2"></span>
+                                    生态基流
+                                </td>
+                                <td>2级</td>
+                                <td>确保河道生态基流</td>
+                                <td>最小下泄流量0.5m³/s</td>
+                                <td>95%</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="priority-indicator priority-2"></span>
+                                    农业灌溉
+                                </td>
+                                <td>3级</td>
+                                <td>保障下游灌区农业用水</td>
+                                <td>灌溉期供水保证率95%</td>
+                                <td>95%</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="priority-indicator priority-3"></span>
+                                    一般工业
+                                </td>
+                                <td>4级</td>
+                                <td>一般工业生产用水</td>
+                                <td>生产季节供水保证率90%</td>
+                                <td>90%</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="priority-indicator priority-4"></span>
+                                    景观环境
+                                </td>
+                                <td>5级</td>
+                                <td>城市景观和环境用水</td>
+                                <td>在满足前四项的前提下优化</td>
+                                <td>85%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">兴利运行参数</div>
+                    <button class="btn btn-primary">编辑</button>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">正常蓄水位(m)</label>
+                            <input type="number" class="form-control" value="1726.10" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">汛限水位(m)</label>
+                            <input type="number" class="form-control" value="1724.00" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">死水位(m)</label>
+                            <input type="number" class="form-control" value="1710.00" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">兴利库容(万m³)</label>
+                            <input type="number" class="form-control" value="1550" readonly>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">灌溉保证率(%)</label>
+                            <input type="number" class="form-control" value="95.0" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">供水保证率(%)</label>
+                            <input type="number" class="form-control" value="98.0" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">年供水总量(万m³)</label>
+                            <input type="number" class="form-control" value="6500" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">兴利调度期</label>
+                            <input type="text" class="form-control" value="全年（防洪优先）" readonly>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">最大供水流量(m³/s)</label>
+                            <input type="number" class="form-control" value="50.0" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">灌溉水利用率</label>
+                            <input type="number" class="form-control" value="0.65" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">灌溉区面积(万亩)</label>
+                            <input type="number" class="form-control" value="6.0" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">受益人口(万人)</label>
+                            <input type="number" class="form-control" value="45.0" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 2. 调度计划 -->
+        <div class="tab-content" id="plans">
+            <div class="inner-tabs">
+                <div class="inner-tab active" data-inner-tab="annual-plan">年度计划</div>
+                <div class="inner-tab" data-inner-tab="monthly-plan">月度计划</div>
+                <div class="inner-tab" data-inner-tab="weekly-plan">周计划</div>
+                <div class="inner-tab" data-inner-tab="plan-adjust">计划调整</div>
+            </div>
+            
+            <!-- 年度计划 -->
+            <div class="inner-tab-content active" id="annual-plan">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">2024年度兴利调度总计划</div>
+                        <div>
+                            <button class="btn btn-outline">导出计划</button>
+                            <button class="btn btn-primary">编辑计划</button>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-placeholder">年度兴利调度水量分配图将显示在此处</div>
+                    
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>项目</th>
+                                    <th>年度计划量</th>
+                                    <th>已完成量</th>
+                                    <th>完成率</th>
+                                    <th>年度效益(万元)</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>总兴利供水</td>
+                                    <td>6500 万m³</td>
+                                    <td>4225 万m³</td>
+                                    <td>
+                                        65.0%
+                                        <div class="progress-container">
+                                            <div class="progress-bar" style="width: 65%"></div>
+                                        </div>
+                                    </td>
+                                    <td>3580</td>
+                                    <td><span class="badge badge-success">正常</span></td>
+                                </tr>
+                                <tr>
+                                    <td>城乡供水</td>
+                                    <td>1200 万m³</td>
+                                    <td>730 万m³</td>
+                                    <td>
+                                        60.8%
+                                        <div class="progress-container">
+                                            <div class="progress-bar" style="width: 60.8%"></div>
+                                        </div>
+                                    </td>
+                                    <td>1460</td>
+                                    <td><span class="badge badge-success">正常</span></td>
+                                </tr>
+                                <tr>
+                                    <td>农业灌溉</td>
+                                    <td>3800 万m³</td>
+                                    <td>2650 万m³</td>
+                                    <td>
+                                        69.7%
+                                        <div class="progress-container">
+                                            <div class="progress-bar" style="width: 69.7%"></div>
+                                        </div>
+                                    </td>
+                                    <td>1590</td>
+                                    <td><span class="badge badge-success">正常</span></td>
+                                </tr>
+                                <tr>
+                                    <td>工业用水</td>
+                                    <td>800 万m³</td>
+                                    <td>450 万m³</td>
+                                    <td>
+                                        56.3%
+                                        <div class="progress-container">
+                                            <div class="progress-bar progress-bar-warning" style="width: 56.3%"></div>
+                                        </div>
+                                    </td>
+                                    <td>360</td>
+                                    <td><span class="badge badge-warning">偏低</span></td>
+                                </tr>
+                                <tr>
+                                    <td>景观用水</td>
+                                    <td>500 万m³</td>
+                                    <td>300 万m³</td>
+                                    <td>
+                                        60.0%
+                                        <div class="progress-container">
+                                            <div class="progress-bar" style="width: 60%"></div>
+                                        </div>
+                                    </td>
+                                    <td>170</td>
+                                    <td><span class="badge badge-success">正常</span></td>
+                                </tr>
+                                <tr>
+                                    <td>生态放流</td>
+                                    <td>700 万m³</td>
+                                    <td>395 万m³</td>
+                                    <td>
+                                        56.4%
+                                        <div class="progress-container">
+                                            <div class="progress-bar progress-bar-warning" style="width: 56.4%"></div>
+                                        </div>
+                                    </td>
+                                    <td>-</td>
+                                    <td><span class="badge badge-warning">偏低</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 月度计划 -->
+            <div class="inner-tab-content" id="monthly-plan">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">2024年6月兴利调度计划</div>
+                        <div>
+                            <button class="btn btn-outline">导出计划</button>
+                            <button class="btn btn-primary">编辑计划</button>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <div class="alert-icon">ℹ️</div>
+                        <div>
+                            <strong>月度计划状态：</strong>本月为水稻抽穗期，是农业灌溉的关键时期。结合当前水库蓄水情况，在优先保障防洪安全的前提下，适当增加农业灌溉供水量。
+                        </div>
+                    </div>
+                    
+                    <div class="chart-placeholder">月度兴利调度水量分配图将显示在此处</div>
+                    
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>项目</th>
+                                    <th>月度计划量</th>
+                                    <th>已完成量</th>
+                                    <th>完成率</th>
+                                    <th>下旬计划</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>城乡供水</td>
+                                    <td>120 万m³</td>
+                                    <td>85 万m³</td>
+                                    <td>
+                                        70.8%
+                                        <div class="progress-container">
+                                            <div class="progress-bar" style="width: 70.8%"></div>
+                                        </div>
+                                    </td>
+                                    <td>35 万m³</td>
+                                    <td><span class="badge badge-success">正常</span></td>
+                                </tr>
+                                <tr>
+                                    <td>农业灌溉</td>
+                                    <td>620 万m³</td>
+                                    <td>450 万m³</td>
+                                    <td>
+                                        72.6%
+                                        <div class="progress-container">
+                                            <div class="progress-bar" style="width: 72.6%"></div>
+                                        </div>
+                                    </td>
+                                    <td>170 万m³</td>
+                                    <td><span class="badge badge-success">正常</span></td>
+                                </tr>
+                                <tr>
+                                    <td>工业用水</td>
+                                    <td>75 万m³</td>
+                                    <td>48 万m³</td>
+                                    <td>
+                                        64.0%
+                                        <div class="progress-container">
+                                            <div class="progress-bar" style="width: 64.0%"></div>
+                                        </div>
+                                    </td>
+                                    <td>27 万m³</td>
+                                    <td><span class="badge badge-success">正常</span></td>
+                                </tr>
+                                <tr>
+                                    <td>景观用水</td>
+                                    <td>50 万m³</td>
+                                    <td>30 万m³</td>
+                                    <td>
+                                        60.0%
+                                        <div class="progress-container">
+                                            <div class="progress-bar" style="width: 60.0%"></div>
+                                        </div>
+                                    </td>
+                                    <td>20 万m³</td>
+                                    <td><span class="badge badge-success">正常</span></td>
+                                </tr>
+                                <tr>
+                                    <td>生态放流</td>
+                                    <td>70 万m³</td>
+                                    <td>45 万m³</td>
+                                    <td>
+                                        64.3%
+                                        <div class="progress-container">
+                                            <div class="progress-bar" style="width: 64.3%"></div>
+                                        </div>
+                                    </td>
+                                    <td>25 万m³</td>
+                                    <td><span class="badge badge-success">正常</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 周计划 -->
+            <div class="inner-tab-content" id="weekly-plan">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">本周兴利调度计划（6月10日-6月16日）</div>
+                        <div>
+                            <button class="btn btn-outline">导出计划</button>
+                            <button class="btn btn-primary">编辑计划</button>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <div class="alert-icon">ℹ️</div>
+                        <div>
+                            <strong>周计划状态：</strong>本周预计有小到中雨，需密切关注水库水位变化。灌区需水强度较大，按照计划正常供水。
+                        </div>
+                    </div>
+                    
+                    <div class="chart-placeholder">周兴利调度任务安排图将显示在此处</div>
+                    
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>日期</th>
+                                    <th>城乡供水(m³/s)</th>
+                                    <th>农业灌溉(m³/s)</th>
+                                    <th>工业用水(m³/s)</th>
+                                    <th>生态流量(m³/s)</th>
+                                    <th>总兴利流量(m³/s)</th>
+                                    <th>主要任务</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>6月10日</td>
+                                    <td>1.5</td>
+                                    <td>12.8</td>
+                                    <td>1.2</td>
+                                    <td>0.8</td>
+                                    <td>16.3</td>
+                                    <td>西部灌区灌溉</td>
+                                </tr>
+                                <tr>
+                                    <td>6月11日</td>
+                                    <td>1.5</td>
+                                    <td>13.2</td>
+                                    <td>1.2</td>
+                                    <td>0.8</td>
+                                    <td>16.7</td>
+                                    <td>西部灌区灌溉</td>
+                                </tr>
+                                <tr>
+                                    <td>6月12日</td>
+                                    <td>1.5</td>
+                                    <td>14.0</td>
+                                    <td>1.2</td>
+                                    <td>0.8</td>
+                                    <td>17.5</td>
+                                    <td>北部灌区灌溉</td>
+                                </tr>
+                                <tr>
+                                    <td>6月13日</td>
+                                    <td>1.5</td>
+                                    <td>14.5</td>
+                                    <td>1.2</td>
+                                    <td>0.8</td>
+                                    <td>18.0</td>
+                                    <td>北部灌区灌溉</td>
+                                </tr>
+                                <tr>
+                                    <td>6月14日</td>
+                                    <td>1.5</td>
+                                    <td>13.0</td>
+                                    <td>1.2</td>
+                                    <td>0.8</td>
+                                    <td>16.5</td>
+                                    <td>东部灌区灌溉</td>
+                                </tr>
+                                <tr style="background-color: #e3f2fd;">
+                                    <td>6月15日</td>
+                                    <td>1.5</td>
+                                    <td>15.0</td>
+                                    <td>1.2</td>
+                                    <td>0.8</td>
+                                    <td>18.5</td>
+                                    <td>东部、南部灌区灌溉</td>
+                                </tr>
+                                <tr>
+                                    <td>6月16日</td>
+                                    <td>1.5</td>
+                                    <td>14.0</td>
+                                    <td>1.2</td>
+                                    <td>0.8</td>
+                                    <td>17.5</td>
+                                    <td>南部灌区灌溉</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 计划调整 -->
+            <div class="inner-tab-content" id="plan-adjust">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">调度计划调整</div>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <div class="alert-icon">⚠️</div>
+                        <div>
+                            <strong>注意：</strong>调度计划调整必须考虑当前水库运行状况，确保防洪安全优先，并按照兴利优先级顺序进行。
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">调整类型</label>
+                                <select class="form-control">
+                                    <option>日计划调整</option>
+                                    <option selected>周计划调整</option>
+                                    <option>月计划调整</option>
+                                    <option>年度计划调整</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">调整日期/范围</label>
+                                <input type="text" class="form-control" value="2024-06-15 至 2024-06-16">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">调整原因</label>
+                                <select class="form-control">
+                                    <option>常规调整</option>
+                                    <option selected>灌溉需求变化</option>
+                                    <option>来水情况变化</option>
+                                    <option>水质问题</option>
+                                    <option>设备检修</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">调整说明</label>
+                        <textarea class="form-control" rows="3">东部灌区水稻抽穗期用水需求增加，且当前水库蓄水良好，建议增加15日至16日的灌溉供水量。</textarea>
+                    </div>
+                    
+                    <div class="card-title" style="margin-top: 20px; margin-bottom: 15px;">流量调整明细</div>
+                    
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>日期</th>
+                                    <th>项目</th>
+                                    <th>原计划流量(m³/s)</th>
+                                    <th>调整后流量(m³/s)</th>
+                                    <th>变化量(m³/s)</th>
+                                    <th>日增加水量(万m³)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="3">6月15日</td>
+                                    <td>农业灌溉</td>
+                                    <td>12.0</td>
+                                    <td><input type="number" class="form-control" value="15.0"></td>
+                                    <td>+3.0</td>
+                                    <td>2.59</td>
+                                </tr>
+                                <tr>
+                                    <td>工业用水</td>
+                                    <td>1.0</td>
+                                    <td><input type="number" class="form-control" value="1.2"></td>
+                                    <td>+0.2</td>
+                                    <td>0.17</td>
+                                </tr>
+                                <tr>
+                                    <td>总兴利流量</td>
+                                    <td>15.3</td>
+                                    <td>18.5</td>
+                                    <td>+3.2</td>
+                                    <td>2.76</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="3">6月16日</td>
+                                    <td>农业灌溉</td>
+                                    <td>11.0</td>
+                                    <td><input type="number" class="form-control" value="14.0"></td>
+                                    <td>+3.0</td>
+                                    <td>2.59</td>
+                                </tr>
+                                <tr>
+                                    <td>工业用水</td>
+                                    <td>1.0</td>
+                                    <td><input type="number" class="form-control" value="1.2"></td>
+                                    <td>+0.2</td>
+                                    <td>0.17</td>
+                                </tr>
+                                <tr>
+                                    <td>总兴利流量</td>
+                                    <td>14.3</td>
+                                    <td>17.5</td>
+                                    <td>+3.2</td>
+                                    <td>2.76</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="form-row" style="margin-top: 20px;">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">预计影响水位(m)</label>
+                                <input type="text" class="form-control" value="-0.08">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">总增加用水量(万m³)</label>
+                                <input type="text" class="form-control" value="5.52">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">预计效益影响</label>
+                                <input type="text" class="form-control" value="增加农业效益">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">预计影响区域</label>
+                                <input type="text" class="form-control" value="东部灌区、南部灌区">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">安全评估</label>
+                        <textarea class="form-control" rows="3">调整后的供水方案在防洪安全范围内，当前水库水位1723.85米，调整后预计降至1723.77米，仍低于汛限水位1724.00米。根据气象预报，未来降雨量较小，水库有足够的调蓄能力，调整方案安全可行。</textarea>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                        <button class="btn btn-outline">取消</button>
+                        <button class="btn btn-info">重新计算</button>
+                        <button class="btn btn-primary">提交调整</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3. 灌溉调度 -->
+        <div class="tab-content" id="irrigation">
+            <div class="card-row">
+                <div class="stat-card">
+                    <div class="stat-title">灌溉水量状态</div>
+                    <div class="stat-value primary">83.2%</div>
+                    <div class="stat-desc">用水计划完成率</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">当月灌溉需水量</div>
+                    <div class="stat-value primary">620 万m³</div>
+                    <div class="stat-desc">已供水: 450 万m³</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">今日灌溉流量</div>
+                    <div class="stat-value primary">15.0 m³/s</div>
+                    <div class="stat-desc">灌溉面积: 3.4万亩</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">作物生长阶段</div>
+                    <div class="stat-value primary">抽穗期</div>
+                    <div class="stat-desc">需水关键期</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">灌溉用水计划</div>
+                    <div>
+                        <button class="btn btn-outline">导出数据</button>
+                        <button class="btn btn-primary">调整计划</button>
+                    </div>
+                </div>
+                
+                <div class="chart-placeholder">灌溉用水计划与实际用水对比图将显示在此处</div>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>灌区</th>
+                                <th>灌溉面积(万亩)</th>
+                                <th>主要作物</th>
+                                <th>计划用水量(万m³)</th>
+                                <th>已用水量(万m³)</th>
+                                <th>完成率</th>
+                                <th>今日供水流量(m³/s)</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>东部灌区</td>
+                                <td>2.2</td>
+                                <td>水稻</td>
+                                <td>240</td>
+                                <td>180</td>
+                                <td>
+                                    75.0%
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: 75%"></div>
+                                    </div>
+                                </td>
+                                <td>6.5</td>
+                                <td>
+                                    <button class="btn btn-outline">详情</button>
+                                    <button class="btn btn-primary">调整</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>西部灌区</td>
+                                <td>1.8</td>
+                                <td>玉米</td>
+                                <td>185</td>
+                                <td>145</td>
+                                <td>
+                                    78.4%
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: 78.4%"></div>
+                                    </div>
+                                </td>
+                                <td>5.0</td>
+                                <td>
+                                    <button class="btn btn-outline">详情</button>
+                                    <button class="btn btn-primary">调整</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>南部灌区</td>
+                                <td>1.2</td>
+                                <td>蔬菜</td>
+                                <td>135</td>
+                                <td>85</td>
+                                <td>
+                                    63.0%
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: 63%"></div>
+                                    </div>
+                                </td>
+                                <td>3.5</td>
+                                <td>
+                                    <button class="btn btn-outline">详情</button>
+                                    <button class="btn btn-primary">调整</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>北部灌区</td>
+                                <td>0.8</td>
+                                <td>果树</td>
+                                <td>60</td>
+                                <td>40</td>
+                                <td>
+                                    66.7%
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: 66.7%"></div>
+                                    </div>
+                                </td>
+                                <td>0</td>
+                                <td>
+                                    <button class="btn btn-outline">详情</button>
+                                    <button class="btn btn-primary">调整</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">灌溉调度执行</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">调度日期</label>
+                            <input type="date" class="form-control" value="2024-06-15">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">灌区选择</label>
+                            <select class="form-control">
+                                <option>全部灌区</option>
+                                <option selected>东部灌区</option>
+                                <option>西部灌区</option>
+                                <option>南部灌区</option>
+                                <option>北部灌区</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">主要作物</label>
+                            <input type="text" class="form-control" value="水稻（抽穗期）">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">计划流量(m³/s)</label>
+                            <input type="number" class="form-control" value="6.5">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">计划供水时段</label>
+                            <input type="text" class="form-control" value="14:00-17:00">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">计划供水量(万m³)</label>
+                            <input type="number" class="form-control" value="7.02" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">关联闸门</label>
+                            <select class="form-control">
+                                <option>全部闸门</option>
+                                <option selected>放水洞闸门</option>
+                                <option>东部灌区进水闸</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">实时流量(m³/s)</label>
+                            <input type="number" class="form-control" value="6.5" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">已供水时长</label>
+                            <input type="text" class="form-control" value="1小时05分" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">已供水量(万m³)</label>
+                            <input type="number" class="form-control" value="2.34" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">灌溉面积(万亩)</label>
+                            <input type="number" class="form-control" value="2.2">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">灌溉水利用率</label>
+                            <input type="number" class="form-control" value="0.65">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">灌溉定额(m³/亩)</label>
+                            <input type="number" class="form-control" value="32">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">渠道损失率(%)</label>
+                            <input type="number" class="form-control" value="15">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">灌溉方式</label>
+                            <select class="form-control">
+                                <option>自流灌溉</option>
+                                <option selected>渠道灌溉</option>
+                                <option>喷灌</option>
+                                <option>滴灌</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">灌溉目的</label>
+                    <textarea class="form-control" rows="2">水稻抽穗期灌溉，关键生长期需水，确保产量和品质。</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">灌溉效益分析</label>
+                    <textarea class="form-control" rows="3">本次灌溉可满足东部灌区2.2万亩水稻抽穗期用水需求，水稻抽穗期灌溉对产量影响较大，预计增产15%左右，增加经济效益约66万元。水利用效率预计可达0.65，高于常规灌溉0.55的水平。</textarea>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-danger">终止供水</button>
+                    <button class="btn btn-warning">调整流量</button>
+                    <button class="btn btn-success">开始供水</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 4. 供水调度 -->
+        <div class="tab-content" id="water-supply">
+            <div class="card-row">
+                <div class="stat-card">
+                    <div class="stat-title">年度供水量</div>
+                    <div class="stat-value primary">1180 万m³</div>
+                    <div class="stat-desc">年计划: 2000 万m³</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">城镇供水量</div>
+                    <div class="stat-value primary">730 万m³</div>
+                    <div class="stat-desc">计划完成率: 60.8%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">工业供水量</div>
+                    <div class="stat-value primary">450 万m³</div>
+                    <div class="stat-desc">计划完成率: 56.3%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">当前供水流量</div>
+                    <div class="stat-value primary">2.7 m³/s</div>
+                    <div class="stat-desc">城镇: 1.5 | 工业: 1.2</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">供水计划与执行</div>
+                    <div>
+                        <button class="btn btn-outline">导出数据</button>
+                        <button class="btn btn-primary">调整计划</button>
+                    </div>
+                </div>
+                
+                <div class="chart-placeholder">月度供水计划与实际供水量对比图将显示在此处</div>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>供水区域</th>
+                                <th>供水类型</th>
+                                <th>年度计划量(万m³)</th>
+                                <th>已供水量(万m³)</th>
+                                <th>完成率</th>
+                                <th>当前供水流量(m³/s)</th>
+                                <th>供水保证率</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>城区供水</td>
+                                <td>生活用水</td>
+                                <td>850</td>
+                                <td>520</td>
+                                <td>
+                                    61.2%
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: 61.2%"></div>
+                                    </div>
+                                </td>
+                                <td>1.2</td>
+                                <td>99.5%</td>
+                                <td>
+                                    <button class="btn btn-outline">详情</button>
+                                    <button class="btn btn-primary">调整</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>工业园区</td>
+                                <td>工业用水</td>
+                                <td>800</td>
+                                <td>450</td>
+                                <td>
+                                    56.3%
+                                    <div class="progress-container">
+                                        <div class="progress-bar progress-bar-warning" style="width: 56.3%"></div>
+                                    </div>
+                                </td>
+                                <td>1.2</td>
+                                <td>92.8%</td>
+                                <td>
+                                    <button class="btn btn-outline">详情</button>
+                                    <button class="btn btn-primary">调整</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>郊区镇</td>
+                                <td>生活用水</td>
+                                <td>350</td>
+                                <td>210</td>
+                                <td>
+                                    60.0%
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: 60.0%"></div>
+                                    </div>
+                                </td>
+                                <td>0.3</td>
+                                <td>98.2%</td>
+                                <td>
+                                    <button class="btn btn-outline">详情</button>
+                                    <button class="btn btn-primary">调整</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>景观用水</td>
+                                <td>生态环境</td>
+                                <td>200</td>
+                                <td>120</td>
+                                <td>
+                                    60.0%
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: 60.0%"></div>
+                                    </div>
+                                </td>
+                                <td>0.2</td>
+                                <td>90.5%</td>
+                                <td>
+                                    <button class="btn btn-outline">详情</button>
+                                    <button class="btn btn-primary">调整</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">供水调度执行</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">供水区域</label>
+                            <select class="form-control">
+                                <option>全部区域</option>
+                                <option selected>城区供水</option>
+                                <option>工业园区</option>
+                                <option>郊区镇</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">供水类型</label>
+                            <select class="form-control">
+                                <option>全部类型</option>
+                                <option selected>生活用水</option>
+                                <option>工业用水</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">调度日期</label>
+                            <input type="date" class="form-control" value="2024-06-15">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">计划流量(m³/s)</label>
+                            <input type="number" class="form-control" value="1.2">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">实际流量(m³/s)</label>
+                            <input type="number" class="form-control" value="1.2" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">日计划供水量(万m³)</label>
+                            <input type="number" class="form-control" value="10.4">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">已供水量(万m³)</label>
+                            <input type="number" class="form-control" value="7.8" readonly>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">关联闸门</label>
+                            <select class="form-control">
+                                <option>全部闸门</option>
+                                <option selected>城区供水管道阀门</option>
+                                <option>放水洞闸门</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">阀门状态</label>
+                            <input type="text" class="form-control" value="正常开启" readonly>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">城区用水人口</label>
+                            <input type="number" class="form-control" value="28.5" readonly>
+                            <small class="form-text text-muted">单位：万人</small>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">供水保证率</label>
+                            <input type="text" class="form-control" value="99.5%" readonly>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">用水定额(L/人·日)</label>
+                            <input type="number" class="form-control" value="150">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">管网压力(MPa)</label>
+                            <input type="number" class="form-control" value="0.28">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">管网漏损率(%)</label>
+                            <input type="number" class="form-control" value="12">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">供水紧急程度</label>
+                            <select class="form-control">
+                                <option>一般供水</option>
+                                <option selected>优先保障</option>
+                                <option>紧急供水</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">水质情况</label>
+                    <textarea class="form-control" rows="2">水质良好，符合生活饮用水标准。浑浊度0.8NTU，pH值7.2，总硬度210mg/L，余氯0.3mg/L。</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">供水效益分析</label>
+                    <textarea class="form-control" rows="3">城区供水直接满足28.5万人的生活用水需求，日供水量约10.4万m³。按照2.5元/m³计算，日供水效益约26万元。同时维持了城市正常运转和居民生活质量，社会效益显著。</textarea>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-warning">调整流量</button>
+                    <button class="btn btn-primary">确认执行</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 5. 调度任务 -->
+        <div class="tab-content" id="tasks">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">兴利调度任务列表</div>
+                    <button class="btn btn-primary">创建任务</button>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="搜索调度任务...">
+                    <button class="search-btn">搜索</button>
+                </div>
+                
+                <div class="filters">
+                    <div class="filter">
+                        <span class="filter-label">任务类型</span>
+                        <select class="filter-select">
+                            <option>全部</option>
+                            <option selected>灌溉调度</option>
+                            <option>供水调度</option>
+                            <option>生态放水</option>
+                        </select>
+                    </div>
+                    <div class="filter">
+                        <span class="filter-label">状态</span>
+                        <select class="filter-select">
+                            <option>全部</option>
+                            <option>未开始</option>
+                            <option selected>进行中</option>
+                            <option>已完成</option>
+                            <option>已取消</option>
+                        </select>
+                    </div>
+                    <div class="filter">
+                        <span class="filter-label">日期</span>
+                        <input type="date" class="filter-select" value="2024-06-15">
+                    </div>
+                    <div class="filter">
+                        <span class="filter-label">&nbsp;</span>
+                        <button class="btn btn-primary" style="width: 100%;">应用筛选</button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>任务ID</th>
+                                <th>任务名称</th>
+                                <th>任务类型</th>
+                                <th>计划时间</th>
+                                <th>关联计划</th>
+                                <th>执行人员</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>B2024061501</td>
+                                <td>城区日常供水</td>
+                                <td>供水调度</td>
+                                <td>2024-06-15 全天</td>
+                                <td>城镇供水计划</td>
+                                <td>马工</td>
+                                <td><span class="badge badge-warning">进行中</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                            <tr style="background-color: #e3f2fd;">
+                                <td>B2024061502</td>
+                                <td>为农业灌区放水供应</td>
+                                <td>灌溉调度</td>
+                                <td>2024-06-15 14:00-17:00</td>
+                                <td>夏季灌溉计划</td>
+                                <td>赵工、孙工</td>
+                                <td><span class="badge badge-warning">进行中</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>B2024061503</td>
+                                <td>工业园区供水</td>
+                                <td>供水调度</td>
+                                <td>2024-06-15 08:00-20:00</td>
+                                <td>工业供水计划</td>
+                                <td>王工</td>
+                                <td><span class="badge badge-warning">进行中</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>B2024061504</td>
+                                <td>生态基流放水</td>
+                                <td>生态放水</td>
+                                <td>2024-06-15 全天</td>
+                                <td>生态调度计划</td>
+                                <td>系统自动执行</td>
+                                <td><span class="badge badge-warning">进行中</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>B2024061505</td>
+                                <td>南部灌区灌溉供水</td>
+                                <td>灌溉调度</td>
+                                <td>2024-06-16 09:00-12:00</td>
+                                <td>夏季灌溉计划</td>
+                                <td>李工、张工</td>
+                                <td><span class="badge badge-secondary">未开始</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>B2024061506</td>
+                                <td>郊区镇供水</td>
+                                <td>供水调度</td>
+                                <td>2024-06-15 全天</td>
+                                <td>城镇供水计划</td>
+                                <td>李工</td>
+                                <td><span class="badge badge-warning">进行中</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>B2024061406</td>
+                                <td>园区景观用水</td>
+                                <td>供水调度</td>
+                                <td>2024-06-14 08:00-18:00</td>
+                                <td>景观供水计划</td>
+                                <td>张工</td>
+                                <td><span class="badge badge-success">已完成</span></td>
+                                <td>
+                                    <button class="btn btn-outline">查看</button>
+                                    <button class="btn btn-outline">编辑</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="pagination">
+                    <div class="page-item">«</div>
+                    <div class="page-item active">1</div>
+                    <div class="page-item">2</div>
+                    <div class="page-item">»</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">任务详情 - 为农业灌区放水供应</div>
+                    <div>
+                        <button class="btn btn-outline">取消任务</button>
+                        <button class="btn btn-primary">编辑任务</button>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 10px;">基本信息</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">任务ID</label>
+                                <input type="text" class="form-control" value="B2024061502" readonly>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">任务名称</label>
+                                <input type="text" class="form-control" value="为农业灌区放水供应" readonly>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">任务类型</label>
+                                <input type="text" class="form-control" value="灌溉调度" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">计划执行时间</label>
+                                <input type="text" class="form-control" value="2024-06-15 14:00-17:00" readonly>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">关联计划</label>
+                                <input type="text" class="form-control" value="夏季灌溉计划" readonly>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">状态</label>
+                                <input type="text" class="form-control" value="进行中" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 10px;">任务内容</h3>
+                    <div class="form-group">
+                        <textarea class="form-control" rows="3" readonly>根据夏季灌溉计划，为东部和南部灌区供水，调整放水洞闸门开度至15%，供水流量控制在10-15m³/s。主要用于水稻抽穗期灌溉。</textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">灌溉区域</label>
+                                <input type="text" class="form-control" value="东部灌区（2.2万亩）、南部灌区（1.2万亩）" readonly>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">计划用水量</label>
+                                <input type="text" class="form-control" value="约10.8万立方米" readonly>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">灌溉作物</label>
+                                <input type="text" class="form-control" value="水稻（抽穗期）、蔬菜" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 10px;">人员安排</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>人员</th>
+                                    <th>岗位</th>
+                                    <th>职责</th>
+                                    <th>联系方式</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>赵工</td>
+                                    <td>调度班长</td>
+                                    <td>监督灌溉调度执行，协调各方需求</td>
+                                    <td>13800138004</td>
+                                </tr>
+                                <tr>
+                                    <td>孙工</td>
+                                    <td>闸门操作工</td>
+                                    <td>执行闸门调整操作，监控流量变化</td>
+                                    <td>13800138008</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 10px;">兴利效益评估</h3>
+                    <div class="form-group">
+                        <textarea class="form-control" rows="3" readonly>本次灌溉供水将满足东部和南部灌区3.4万亩农田的用水需求，主要作物水稻处于抽穗期，是关键需水期。预计产生的经济效益约120万元，灌溉水利用率约0.65。</textarea>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 10px;">防洪影响评估</h3>
+                    <div class="form-group">
+                        <textarea class="form-control" rows="3" readonly>供水期间水库水位预计下降0.08米，当前水位1723.85米，低于汛限水位1724.00米。未来3天降雨量预计不超过10毫米，不会对防洪安全造成影响。</textarea>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 10px;">注意事项</h3>
+                    <div class="form-group">
+                        <textarea class="form-control" rows="3" readonly>1. 灌溉供水应在确保防洪安全的前提下进行
+2. 密切监控水情变化，一旦发生紧急情况应优先保障防洪
+3. 与灌区管理站保持联系，及时反馈供水情况
+4. 记录供水流量、水量等数据，为后续评估提供依据</textarea>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-primary" style="padding: 10px 30px; font-size: 16px;">调整供水流量</button>
+                    <button class="btn btn-info" style="padding: 10px 30px; font-size: 16px; margin-left: 15px;">结束供水</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">创建调度任务</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">任务名称 <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" placeholder="输入任务名称">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">任务类型 <span style="color: red;">*</span></label>
+                            <select class="form-control">
+                                <option>灌溉调度</option>
+                                <option selected>供水调度</option>
+                                <option>生态放水</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">计划执行时间 <span style="color: red;">*</span></label>
+                            <input type="datetime-local" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">预计结束时间</label>
+                            <input type="datetime-local" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">关联计划</label>
+                            <select class="form-control">
+                                <option>无</option>
+                                <option>夏季灌溉计划</option>
+                                <option>城镇供水计划</option>
+                                <option selected>工业供水计划</option>
+                                <option>生态调度计划</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">供水区域</label>
+                            <select class="form-control">
+                                <option>城区供水</option>
+                                <option selected>工业园区</option>
+                                <option>郊区镇</option>
+                                <option>景观用水</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">计划流量(m³/s)</label>
+                            <input type="number" class="form-control" value="1.2">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">计划供水量(万m³)</label>
+                            <input type="number" class="form-control" value="6.2">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">关联闸门</label>
+                            <select class="form-control">
+                                <option>放水洞闸门</option>
+                                <option selected>工业园区供水管道阀门</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">任务内容描述 <span style="color: red;">*</span></label>
+                    <textarea class="form-control" rows="3" placeholder="详细描述任务的内容、目的和要求"></textarea>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 10px;">人员安排 <span style="color: red;">*</span></h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">执行人员</label>
+                                <select class="form-control">
+                                    <option>李工</option>
+                                    <option>张工</option>
+                                    <option>赵工</option>
+                                    <option selected>王工</option>
+                                    <option>孙工</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">监督人员</label>
+                                <select class="form-control">
+                                    <option selected>调度长</option>
+                                    <option>赵工</option>
+                                    <option>李工</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">兴利效益预估</label>
+                    <textarea class="form-control" rows="3" placeholder="预估本次调度产生的兴利效益，如灌溉效益、供水效益等"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">防洪影响评估</label>
+                    <textarea class="form-control" rows="3" placeholder="评估本次兴利调度对防洪安全的影响"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">注意事项</label>
+                    <textarea class="form-control" rows="3" placeholder="任务执行过程中的注意事项和安全提示"></textarea>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-outline">取消</button>
+                    <button class="btn btn-primary">创建任务</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 6. 效益评估 -->
+        <div class="tab-content" id="statistics">
+            <div class="card-row">
+                <div class="stat-card">
+                    <div class="stat-title">年度总效益</div>
+                    <div class="stat-value primary">3580 万元</div>
+                    <div class="stat-desc">同比增长: 8.5%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">灌溉效益</div>
+                    <div class="stat-value primary">1590 万元</div>
+                    <div class="stat-desc">农业增产价值</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">供水效益</div>
+                    <div class="stat-value primary">1820 万元</div>
+                    <div class="stat-desc">城镇供水及工业</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">生态效益</div>
+                    <div class="stat-value primary">170 万元</div>
+                    <div class="stat-desc">生态环境改善</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">效益综合评估</div>
+                    <div>
+                        <button class="btn btn-outline">导出报告</button>
+                        <button class="btn btn-primary">生成报表</button>
+                    </div>
+                </div>
+                
+                <div class="chart-placeholder">年度兴利效益综合分析图将显示在此处</div>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>效益类型</th>
+                                <th>年度目标</th>
+                                <th>当前完成情况</th>
+                                <th>经济效益(万元)</th>
+                                <th>社会效益评估</th>
+                                <th>生态效益评估</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>灌溉效益</td>
+                                <td>灌溉面积6万亩</td>
+                                <td>已灌溉4.2万亩，水稻长势良好</td>
+                                <td>1590</td>
+                                <td>保障粮食安全，增加农民收入</td>
+                                <td>减少地下水开采，节约水资源</td>
+                            </tr>
+                            <tr>
+                                <td>城镇供水</td>
+                                <td>满足30万人生活用水</td>
+                                <td>已满足28.5万人，供水正常</td>
+                                <td>1460</td>
+                                <td>保障城镇居民生活质量</td>
+                                <td>集中供水提高水资源利用率</td>
+                            </tr>
+                            <tr>
+                                <td>工业供水</td>
+                                <td>满足工业区用水需求</td>
+                                <td>保障率92.8%，工业生产正常</td>
+                                <td>360</td>
+                                <td>支持工业生产，促进就业</td>
+                                <td>改善工业取水条件，减少对地下水依赖</td>
+                            </tr>
+                            <tr>
+                                <td>生态效益</td>
+                                <td>保障河道生态基流</td>
+                                <td>生态基流满足率98.2%</td>
+                                <td>170</td>
+                                <td>改善河道景观，提升居民生活环境</td>
+                                <td>维持河道生态系统健康，保护水生生物</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">兴利调度综合评价</div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <div class="alert-icon">💡</div>
+                    <div>
+                        <strong>评价结论：</strong>根据当前水库运行状况和兴利任务完成情况，结合各方效益评估，系统生成以下综合评价。
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">综合评分</label>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">经济效益</label>
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: 85%"></div>
+                                </div>
+                                <span style="display: block; text-align: center; margin-top: 5px;">85分</span>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">社会效益</label>
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: 90%"></div>
+                                </div>
+                                <span style="display: block; text-align: center; margin-top: 5px;">90分</span>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">生态效益</label>
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: 82%"></div>
+                                </div>
+                                <span style="display: block; text-align: center; margin-top: 5px;">82分</span>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">综合评分</label>
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: 86%"></div>
+                                </div>
+                                <span style="display: block; text-align: center; margin-top: 5px;">86分</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">综合评价</label>
+                    <textarea class="form-control" rows="5" readonly>本年度兴利调度工作开展良好，各项指标基本达到预期目标。特别是在水稻抽穗关键期增加灌溉供水，有效保障了粮食生产。城镇供水保证率高，居民生活用水得到充分保障。工业供水较为稳定，但受防洪限制略有压缩，仍满足了基本生产需求。生态基流放水达到计划要求，河道生态环境得到有效维护。
+
+建议进一步加强灌区用水精细化管理，推广节水灌溉措施，提高灌溉水利用率；优化城镇供水管网，减少漏损；加强工业用水计量管理，提升工业用水效率；继续保持生态基流放水稳定性，确保河道生态环境持续改善。</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">年度兴利水资源利用情况</label>
+                    <textarea class="form-control" rows="5" readonly>本年度水库可兴利水量6500万立方米，已利用4225万立方米，占计划的65.0%。其中：
+1. 灌溉用水3800万立方米，已使用2650万立方米，占计划的69.7%
+2. 城镇供水1200万立方米，已使用730万立方米，占计划的60.8%
+3. 工业用水800万立方米，已使用450万立方米，占计划的56.3%
+4. 生态用水700万立方米，已使用395万立方米，占计划的56.4%
+
+水资源利用效率进一步提高：灌溉水利用系数从去年的0.58提升至0.65；城镇供水管网漏损率从15%下降到12%；工业用水重复利用率达到78%。水资源利用结构合理，各项用水协调发展。</textarea>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <div style="flex: 1;">
+                        <label class="form-label">问题与挑战</label>
+                        <textarea class="form-control" rows="6" readonly>1. 水库来水不稳定，部分时段来水偏少，影响兴利调度
+2. 农业灌溉设施老化，渠道渗漏损失较大，影响灌溉效率
+3. 部分工业企业用水计量不准确，水资源优化配置难度大
+4. 气候变化导致降雨时空分布不均，增加了兴利调度难度
+5. 防洪与兴利目标在汛期有一定冲突，需进一步协调平衡
+6. 生态环境用水需求日益增长，与传统用水方式存在竞争</textarea>
+                    </div>
+                    <div style="flex: 1;">
+                        <label class="form-label">下一步工作计划</label>
+                        <textarea class="form-control" rows="6" readonly>1. 提升水情预报能力，增强兴利调度的科学性和前瞻性
+2. 实施灌区现代化改造，推广节水灌溉技术，提高灌溉效率
+3. 完善工业用水计量体系，推行水资源定额管理
+4. 加强气象水文监测，提高应对气候变化的调度能力
+5. 深化防洪与兴利的协调机制，研究优化调度新方案
+6. 建立健全生态环境需水保障机制，促进水资源可持续利用
+7. 强化兴利调度智能决策支持系统建设，提升调度科学水平</textarea>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-outline">打印评估报告</button>
+                    <button class="btn btn-primary">生成优化建议</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 选项卡切换
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // 移除所有 active 类
+                document.querySelectorAll('.tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // 添加 active 类到当前选项卡
+                this.classList.add('active');
+                
+                // 显示对应内容
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // 内部选项卡切换
+        document.querySelectorAll('.inner-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // 获取父元素
+                const parentTabs = this.parentElement;
+                
+                // 移除所有兄弟元素的 active 类
+                parentTabs.querySelectorAll('.inner-tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                
+                // 添加 active 类到当前选项卡
+                this.classList.add('active');
+                
+                // 隐藏所有内部内容
+                const parentElement = parentTabs.parentElement;
+                parentElement.querySelectorAll('.inner-tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // 显示对应内容
+                const tabId = this.getAttribute('data-inner-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
